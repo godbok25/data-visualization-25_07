@@ -1005,84 +1005,24 @@
     // 대표 상품 데이터 (예시 값)
     // 대표 리디자인 굿즈 포지셔닝용 데이터 (0~100 지수)
     const bubbleItems = [
-      {
-        label: "자개 텀블러",
-        category: "자개",
-        salesScore: 85,
-        interestScore: 90,
-        redesignScore: 95,
-      },
-      {
-        label: "민화 머그컵",
-        category: "민화",
-        salesScore: 75,
-        interestScore: 88,
-        redesignScore: 92,
-      },
-      {
-        label: "단청 패턴 파우치",
-        category: "단청",
-        salesScore: 65,
-        interestScore: 82,
-        redesignScore: 89,
-      },
-      {
-        label: "훈민정음 노트",
-        category: "서체",
-        salesScore: 68,
-        interestScore: 76,
-        redesignScore: 80,
-      },
-      {
-        label: "백자 달항아리 오브제",
-        category: "도자/백자",
-        salesScore: 60,
-        interestScore: 72,
-        redesignScore: 88,
-      },
-      {
-        label: "복식 패턴 스카프",
-        category: "전통복식/문양",
-        salesScore: 78,
-        interestScore: 91,
-        redesignScore: 94,
-      },
-      {
-        label: "전통 문살 액자",
-        category: "건축/목공예",
-        salesScore: 72,
-        interestScore: 84,
-        redesignScore: 90,
-      },
-      {
-        label: "한지 엽서 세트",
-        category: "기타",
-        salesScore: 55,
-        interestScore: 65,
-        redesignScore: 70,
-      },
-      {
-        label: "문양형 굿즈",
-        category: "전통문양",
-        salesScore: 75,
-        interestScore: 80,
-        redesignScore: 68,
-      },
-      {
-        label: "생활소품 리디자인",
-        category: "생활공예",
-        salesScore: 88,
-        interestScore: 75,
-        redesignScore: 70,
-      },
-      {
-        label: "전통회화 포스터",
-        category: "전통회화",
-        salesScore: 82,
-        interestScore: 87,
-        redesignScore: 85,
-      },
+      { label: "자개 텀블러", category: "자개", salesScore: 85, interestScore: 90 },
+      { label: "민화 머그컵", category: "민화", salesScore: 75, interestScore: 88 },
+      { label: "단청 패턴 파우치", category: "단청", salesScore: 65, interestScore: 82 },
+      { label: "훈민정음 노트", category: "서체", salesScore: 68, interestScore: 76 },
+      { label: "백자 달항아리 오브제", category: "도자/백자", salesScore: 60, interestScore: 72 },
+      { label: "복식 패턴 스카프", category: "전통복식/문양", salesScore: 78, interestScore: 91 },
+      { label: "전통 문살 액자", category: "건축/목공예", salesScore: 72, interestScore: 84 },
+      { label: "한지 엽서 세트", category: "기타", salesScore: 55, interestScore: 65 },
+      { label: "문양형 굿즈", category: "전통문양", salesScore: 75, interestScore: 80 },
+      { label: "생활소품 리디자인", category: "생활공예", salesScore: 88, interestScore: 75 },
+      { label: "전통회화 포스터", category: "전통회화", salesScore: 82, interestScore: 87 },
     ];
+
+    // 자동으로 리디자인 강도 계산
+    bubbleItems.forEach(item => {
+      const rScore = ((item.interestScore - item.salesScore) * 0.6) + (item.interestScore * 0.4);
+      item.redesignScore = Math.round(rScore * 10) / 10; // 소수점 1자리 반올림
+    });
 
     // 카테고리별 색상
     const categoryColors = {
