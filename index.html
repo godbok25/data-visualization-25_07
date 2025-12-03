@@ -212,7 +212,7 @@
       margin: 0;
       font-size: 13px;
       color: var(--text-soft);
-      max-width: 560px;
+      max-width: 580px;
       line-height: 1.5;
     }
 
@@ -550,22 +550,33 @@
    버블 차트용 부드러운 뉴트럴 컬러 팔레트
    --------------------------------- */
     :root {
-      --color-jagae: rgba(115, 132, 191, 0.78);
-      /* 부드러운 인디고 블루 */
-      --color-minhwa: rgba(224, 155, 172, 0.78);
-      /* 로즈 핑크 */
-      --color-dancheong: rgba(158, 190, 173, 0.78);
+      --color-jagae: rgba(102, 125, 204, 0.7);
+      /* 인디고 블루 */
+      --color-minhwa: rgba(220, 145, 170, 0.7);
+      /* 로즈핑크 */
+      --color-dancheong: rgba(139, 182, 165, 0.7);
       /* 세이지 그린 */
-      --color-seoche: rgba(150, 180, 215, 0.78);
+      --color-seoche: rgba(137, 168, 210, 0.7);
       /* 페일 블루 */
-      --color-doja: rgba(228, 205, 155, 0.78);
+      --color-doja: rgba(224, 192, 141, 0.7);
       /* 샌드 베이지 */
-      --color-boksik: rgba(234, 180, 138, 0.78);
-      /* 애프리콧 오렌지 */
-      --color-mokgong: rgba(189, 151, 136, 0.78);
-      /* 웜 브라운 */
-      --color-gita: rgba(180, 185, 198, 0.78);
-      /* 웜 그레이 */
+      --color-boksik: rgba(228, 172, 122, 0.7);
+      /* 살구톤 */
+      --color-mokgong: rgba(176, 130, 120, 0.7);
+      /* 웜 브라운 → 살짝 붉게 */
+      --color-gita: rgba(160, 165, 180, 0.7);
+      /* 쿨 그레이 → 살짝 푸른기 */
+    }
+
+
+    /* GNB 바로 아래 타이틀 고정 */
+    .page-header {
+      position: sticky;
+      top: 64px;
+      /* GNB 높이에 맞춰 조정 */
+      z-index: 10;
+      background: var(--background-color, #f8f9fb);
+      padding: 12px 0;
     }
 
     /*추가 end*/
