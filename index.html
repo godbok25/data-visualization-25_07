@@ -530,23 +530,22 @@
     /* ---------------------------------
    버블 차트용 부드러운 뉴트럴 컬러 팔레트
    --------------------------------- */
-
     :root {
-      --color-jagae: rgba(102, 125, 204, 0.7);
+      --color-jagae: rgba(115, 132, 191, 0.78);
       /* 부드러운 인디고 블루 */
-      --color-minhwa: rgba(220, 145, 170, 0.7);
-      /* 로즈핑크톤 */
-      --color-dancheong: rgba(139, 182, 165, 0.7);
+      --color-minhwa: rgba(224, 155, 172, 0.78);
+      /* 로즈 핑크 */
+      --color-dancheong: rgba(158, 190, 173, 0.78);
       /* 세이지 그린 */
-      --color-seoche: rgba(137, 168, 210, 0.7);
+      --color-seoche: rgba(150, 180, 215, 0.78);
       /* 페일 블루 */
-      --color-doja: rgba(224, 192, 141, 0.7);
+      --color-doja: rgba(228, 205, 155, 0.78);
       /* 샌드 베이지 */
-      --color-boksik: rgba(228, 172, 122, 0.7);
-      /* 살구톤 */
-      --color-mokgong: rgba(186, 140, 130, 0.7);
-      /* 브라운 레드 */
-      --color-gita: rgba(170, 178, 190, 0.7);
+      --color-boksik: rgba(234, 180, 138, 0.78);
+      /* 애프리콧 오렌지 */
+      --color-mokgong: rgba(189, 151, 136, 0.78);
+      /* 웜 브라운 */
+      --color-gita: rgba(180, 185, 198, 0.78);
       /* 웜 그레이 */
     }
 
@@ -986,16 +985,66 @@
     // =========================
 
     // 대표 상품 데이터 (예시 값)
+    // 대표 리디자인 굿즈 포지셔닝용 데이터 (0~100 지수)
     const bubbleItems = [
-      { label: "일월오봉도 자개 텀블러", category: "자개", salesScore: 85, interestScore: 90, redesignScore: 95 },
-      { label: "십장생 민화 머그컵", category: "민화", salesScore: 75, interestScore: 88, redesignScore: 92 },
-      { label: "단청 패턴 노트북 파우치", category: "단청", salesScore: 65, interestScore: 82, redesignScore: 89 },
-      { label: "훈민정음 캘리그래피 노트", category: "서체", salesScore: 68, interestScore: 76, redesignScore: 80 },
-      { label: "백자 달항아리 오브제", category: "도자/백자", salesScore: 60, interestScore: 72, redesignScore: 88 },
-      { label: "오방색 복식 패턴 스카프", category: "전통복식/문양", salesScore: 78, interestScore: 91, redesignScore: 94 },
-      { label: "전통 문살 패턴 액자", category: "건축/목공예", salesScore: 72, interestScore: 84, redesignScore: 90 },
-      { label: "문화유산 한지 엽서 세트", category: "기타", salesScore: 55, interestScore: 65, redesignScore: 70 },
+      {
+        label: "일월오봉도 자개 텀블러",
+        category: "자개",
+        salesScore: 85,
+        interestScore: 90,
+        redesignScore: 95,
+      },
+      {
+        label: "십장생 민화 머그컵",
+        category: "민화",
+        salesScore: 75,
+        interestScore: 88,
+        redesignScore: 92,
+      },
+      {
+        label: "단청 패턴 노트북 파우치",
+        category: "단청",
+        salesScore: 65,
+        interestScore: 82,
+        redesignScore: 89,
+      },
+      {
+        label: "훈민정음 캘리그래피 노트",
+        category: "서체",     // ← 서체 카테고리
+        salesScore: 68,
+        interestScore: 76,
+        redesignScore: 80,
+      },
+      {
+        label: "백자 달항아리 오브제",
+        category: "도자/백자",
+        salesScore: 60,
+        interestScore: 72,
+        redesignScore: 88,
+      },
+      {
+        label: "오방색 복식 패턴 스카프",
+        category: "전통복식/문양",
+        salesScore: 78,
+        interestScore: 91,
+        redesignScore: 94,
+      },
+      {
+        label: "전통 문살 패턴 액자",
+        category: "건축/목공예",
+        salesScore: 72,
+        interestScore: 84,
+        redesignScore: 90,
+      },
+      {
+        label: "문화유산 한지 엽서 세트",
+        category: "기타",      // ← 기타 카테고리 (서체랑 색 다름)
+        salesScore: 55,
+        interestScore: 65,
+        redesignScore: 70,
+      },
     ];
+
 
     // 카테고리별 색상
     const categoryColors = {
@@ -1012,14 +1061,20 @@
 
     function buildBubbleDatasets(items) {
       const grouped = {};
+
       items.forEach((item) => {
         const cat = item.category || "기타";
         if (!grouped[cat]) grouped[cat] = [];
+
+        // 🔹 버블 크기 기준: 판매 + 관심 평균값
+        const intensity = (item.salesScore + item.interestScore) / 2; // 0~100
+        // 🔹 10~38px 사이로 크기 변화 (값이 클수록 크게)
+        const radius = 10 + (intensity / 100) * 28;
+
         grouped[cat].push({
           x: item.salesScore,
           y: item.interestScore,
-          // ▶ 버블 크기 확 키우기 (대략 18~35 정도)
-          r: 18 + item.redesignScore / 4,
+          r: radius,
           _label: item.label,
           _redesign: item.redesignScore,
         });
@@ -1029,10 +1084,10 @@
         label: cat,
         data: grouped[cat],
         backgroundColor: categoryColors[cat] || categoryColors["기타"],
-        borderColor: "rgba(255, 255, 255, 0.95)",   // 흰색 아웃라인
+        borderColor: "rgba(255, 255, 255, 0.95)",       // 흰색 테두리
         borderWidth: 2,
         hoverBorderWidth: 3,
-        hoverBorderColor: "rgba(15, 23, 42, 0.9)",  // 호버 시 진한 테두리
+        hoverBorderColor: "rgba(30, 41, 59, 0.9)",      // 호버 시 진한 외곽선
       }));
     }
 
