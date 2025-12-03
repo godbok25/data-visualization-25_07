@@ -61,6 +61,8 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 60px;
+      /* GNB 높이만큼 스크롤 보정 */
     }
 
     body {
@@ -150,11 +152,13 @@
       /* 화면 높이 기준 */
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      /* 가운데 정렬 */
+      justify-content: flex-start;
+      /* 위에서부터 시작하도록 변경 */
       padding: 40px 0;
       scroll-snap-align: start;
       /* 스크롤 스냅 포인트 */
+      scroll-margin-top: 50px;
+      /* 🔥 GNB와의 간격 (여기 숫자가 핵심) */
     }
 
     /* 스크롤 시 섹션 단위로 부드럽게 이동 */
@@ -534,9 +538,22 @@
       margin: 32px 0;
     }
 
-    /* 카드/패널 간 간격 */
-    #section2 .panel {
-      margin-bottom: 16px;
+    /* 그래프 하단 여백 최소화 */
+    #section2 canvas {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    /* 그래프 설명글 (예: 출처, 단위 등) 간격 조정 */
+    #section2 p {
+      margin-top: 6px !important;
+      /* 트렌드 분석 섹션처럼 딱 붙게 */
+    }
+
+    /* 혹시 그래프 자체 wrapper 있을 경우 */
+    #section2 .layout {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
     }
 
     /* 버블 차트 높이 고정 (세로 간격 확보) */
@@ -544,39 +561,6 @@
       width: 100%;
       height: 420px !important;
       /* 필요하면 380~480px 사이에서 조절 */
-    }
-
-    /* ---------------------------------
-   버블 차트용 부드러운 뉴트럴 컬러 팔레트
-   --------------------------------- */
-    :root {
-      --color-jagae: rgba(102, 125, 204, 0.7);
-      /* 인디고 블루 */
-      --color-minhwa: rgba(220, 145, 170, 0.7);
-      /* 로즈핑크 */
-      --color-dancheong: rgba(139, 182, 165, 0.7);
-      /* 세이지 그린 */
-      --color-seoche: rgba(137, 168, 210, 0.7);
-      /* 페일 블루 */
-      --color-doja: rgba(224, 192, 141, 0.7);
-      /* 샌드 베이지 */
-      --color-boksik: rgba(228, 172, 122, 0.7);
-      /* 살구톤 */
-      --color-mokgong: rgba(176, 130, 120, 0.7);
-      /* 웜 브라운 → 살짝 붉게 */
-      --color-gita: rgba(160, 165, 180, 0.7);
-      /* 쿨 그레이 → 살짝 푸른기 */
-    }
-
-
-    /* GNB 바로 아래 타이틀 고정 */
-    .page-header {
-      position: sticky;
-      top: 64px;
-      /* GNB 높이에 맞춰 조정 */
-      z-index: 10;
-      background: var(--background-color, #f8f9fb);
-      padding: 12px 0;
     }
 
     /*추가 end*/
@@ -763,14 +747,14 @@
     <section id="section2" class="page-section">
       <div class="header-row">
         <div>
-          <h1>문화유산 리디자인 굿즈 종합 비교</h1>
+          <h1>문화유산 리디자인 공공데이터 비교</h1>
           <p class="subtitle">
             대표 리디자인 상품들의 판매 성과, 인기관심도, 리디자인 강도를
             한 번에 비교하는 버블 차트입니다.
             최근 5년간 공공데이터 분석 결과, 전통문양을 현대적으로 재해석한 문화상품이 꾸준히 증가하며 ‘생활 속 문화유산’으로 확산되고 있다.
             자개·민화·단청 계열 제품이 판매와 관심도 모두 높게 나타났고, 감성적 리디자인 제품이 시장 반응을 주도했다.
             리디자인 강도가 높을수록 소비자 관심도도 함께 상승해, 전통의 현대화가 실질적 경쟁력으로 작용하고 있음을 보여준다.
-            <br><b>데이터 출처: 국립박물관문화재단 공공데이터(공모선정목록, 판매정보, 인기관심도, 2020–2025).</b>
+            <br><b>데이터 출처:</b> 국립박물관문화재단 공공데이터(공모선정목록, 판매정보, 인기관심도, 2020–2025).
           </p>
         </div>
       </div>
@@ -1078,20 +1062,46 @@
         redesignScore: 70,
       },
     ];
-
+    bubbleItems.push(
+      {
+        label: "문양형 굿즈",
+        category: "전통문양",
+        salesScore: 75,
+        interestScore: 80,
+        redesignScore: 68,
+      },
+      {
+        label: "생활소품 리디자인",
+        category: "생활공예",
+        salesScore: 88,
+        interestScore: 75,
+        redesignScore: 70,
+      },
+      {
+        label: "전통회화 포스터",
+        category: "전통회화",
+        salesScore: 82,
+        interestScore: 87,
+        redesignScore: 85,
+      }
+    );
 
     // 카테고리별 색상
     const categoryColors = {
-      "자개": getComputedStyle(document.documentElement).getPropertyValue("--color-jagae"),
-      "민화": getComputedStyle(document.documentElement).getPropertyValue("--color-minhwa"),
-      "단청": getComputedStyle(document.documentElement).getPropertyValue("--color-dancheong"),
-      "서체/기타": getComputedStyle(document.documentElement).getPropertyValue("--color-seoche"),
-      "도자/백자": getComputedStyle(document.documentElement).getPropertyValue("--color-doja"),
-      "전통복식/문양": getComputedStyle(document.documentElement).getPropertyValue("--color-boksik"),
-      "건축/목공예": getComputedStyle(document.documentElement).getPropertyValue("--color-mokgong"),
-      "기타": getComputedStyle(document.documentElement).getPropertyValue("--color-gita"),
-    };
+      "자개": "rgba(107, 126, 204, 0.75)",     // 퍼플블루
+      "민화": "rgba(238, 157, 172, 0.75)",     // 로즈핑크
+      "단청": "rgba(156, 193, 171, 0.75)",     // 세이지그린
+      "서체": "rgba(132, 169, 205, 0.75)",     // 페일블루
+      "도자/백자": "rgba(231, 201, 141, 0.75)", // 웜베이지
+      "전통복식/문양": "rgba(246, 162, 98, 0.78)", // 밝고 따뜻한 주황톤 (살구보다 선명)
+      "건축/목공예": "rgba(183, 138, 125, 0.75)", // 모카브라운
+      "기타": "rgba(176, 210, 240, 0.75)",     // 연하늘색
 
+      // ✨ 새로 추가된 카테고리
+      "전통문양": "rgba(195, 179, 255, 0.75)", // 연보라톤
+      "생활공예": "rgba(245, 180, 185, 0.75)", // 로즈 코랄톤 (따뜻한 핑크빛 살구)
+      "전통회화": "rgba(170, 210, 200, 0.75)", // 민트블루톤
+    };
 
     function buildBubbleDatasets(items) {
       const grouped = {};
