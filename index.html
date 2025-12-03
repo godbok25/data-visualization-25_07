@@ -519,29 +519,6 @@
       margin-bottom: 8px;
     }
 
-    /* 오른쪽 설명 카드 안 이미지 플레이스홀더 */
-    .mini-card-image {
-      margin-top: 16px;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      /* 항상 예쁜 비율로 */
-      border-radius: 14px;
-      background: linear-gradient(135deg,
-          rgba(148, 163, 184, 0.18),
-          rgba(148, 163, 184, 0.05));
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
-      overflow: hidden;
-    }
-
-    /* 실제 이미지를 넣었을 때도 꽉 차게 보이도록 */
-    .mini-card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
     /*추가 end*/
     @media (max-width: 900px) {
       body {
@@ -773,13 +750,10 @@
                   최근 3년간 공모선정 건수는 꾸준히 증가하며,
                   자개·단청·민화 등 전통 소재를 활용한 리디자인 굿즈 비중이 높아지고 있습니다.
                 </p>
+                <div class="meta">대표 키워드: 자개 · 단청 · 민화</div>
               </div>
-              <!-- 이미지 박스 -->
-              <div class="mini-card-image">
-                <!-- 실제 이미지 사용 시 예시
-            <img src="./images/award-example.jpg" alt="공모선정 굿즈 예시">
-            -->
-              </div>
+              <!-- 섹션1과 같은 스타일의 작은 이미지 박스 -->
+              <div class="mini-thumb a" aria-hidden="true"></div>
             </article>
           </div>
         </section>
@@ -816,10 +790,9 @@
                   공모선정 증가와 함께 연도별 판매액과 상품 수가 동반 상승하며,
                   문화유산 굿즈 시장이 안정적인 성장 단계에 진입했음을 보여줍니다.
                 </p>
+                <div class="meta">대표 지표: 연도별 판매액 · 상품 수</div>
               </div>
-              <div class="mini-card-image">
-                <!-- <img src="./images/sales-example.jpg" alt="판매 상위 굿즈 예시"> -->
-              </div>
+              <div class="mini-thumb b" aria-hidden="true"></div>
             </article>
           </div>
         </section>
@@ -856,10 +829,9 @@
                   문화유산 관련 키워드의 조회수와 관심 지수는 꾸준히 상승하며,
                   감성소비 중심의 굿즈 수요가 확대되고 있음을 보여줍니다.
                 </p>
+                <div class="meta">대표 지표: 조회수 · 관심지수 평균</div>
               </div>
-              <div class="mini-card-image">
-                <!-- <img src="./images/interest-example.jpg" alt="관심도 높은 굿즈 예시"> -->
-              </div>
+              <div class="mini-thumb c" aria-hidden="true"></div>
             </article>
           </div>
         </section>
@@ -1099,7 +1071,8 @@
     // ▼ JSON 파일 경로 (파일 위치에 맞게 수정)
     const PUBLIC_DATA_PATHS = {
       award: "./국립박물관문화재단_공모선정_통합데이터.json",
-      sales: "./국립박물관문화재단_판매정보_통합데이터.json",
+      // sales를 연도요약 JSON으로 변경
+      sales: "./국립박물관문화재단_판매정보_연도요약.json",
       interest: "./국립박물관문화재단_인기관심도_통합데이터.json",
     };
 
@@ -1240,14 +1213,10 @@
         buildLegendFor("legendAward", ["공모선정 수"], [awardColor]);
 
         // ---------- 2) 판매정보: 연도별 판매액 합계 ----------
-        // 판매정보에서 사용할 금액 컬럼 이름(필요하면 "판매액" 등으로 수정)
-        const salesSample = salesData[0] || {};
-        const salesFieldCandidates = ["판매가", "판매액", "금액"];
-        let salesField = salesFieldCandidates.find(k => k in salesSample) || "판매가";
-
-        const salesMap = groupSumByYear(salesData, salesField);
-        const salesYears = Object.keys(salesMap).sort();
-        const salesSums = salesYears.map(y => salesMap[y]);
+        // 이제 salesData는 이미 연도별 요약 JSON이므로 바로 사용
+        // (국립박물관문화재단_판매정보_연도요약.json 기준: 연도, 총판매액, 상품수)
+        const salesYears = salesData.map((r) => String(r["연도"]).trim());
+        const salesSums = salesData.map((r) => Number(r["총판매액"]) || 0);
 
         const ctxSales = document.getElementById("chartSales").getContext("2d");
         const salesColor = "rgba(96, 165, 250, 1)";
@@ -1282,6 +1251,7 @@
           },
         });
         buildLegendFor("legendSales", ["총 판매액"], [salesColor]);
+
 
         // ---------- 3) 인기관심도: 연도별 평균 관심도 ----------
         const interestField = detectInterestField(interestData[0]);
