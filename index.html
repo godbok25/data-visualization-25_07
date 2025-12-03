@@ -1294,6 +1294,12 @@
         buildLegendFor("legendInterest", ["평균 관심도"], [interestColor]);
 
         // ---------- 4) 종합 연계 차트 (정규화 지수) ----------
+        // salesData 요약에서 연도→총판매액 맵 만들기
+        const salesMap = {};
+        salesYears.forEach((y, idx) => {
+          salesMap[y] = salesSums[idx] || 0;
+        });
+
         // 공통 연도 집합 만들기 (교집합이 아니라 합집합 기준)
         const allYearsSet = new Set([
           ...awardYears,
@@ -1302,9 +1308,10 @@
         ]);
         const allYears = Array.from(allYearsSet).sort();
 
-        const combinedAward = normalizeTo100(allYears.map(y => awardMap[y] || 0));
-        const combinedSales = normalizeTo100(allYears.map(y => salesMap[y] || 0));
-        const combinedInterest = normalizeTo100(allYears.map(y => interestMap[y] || 0));
+        // 각 지표를 0~100으로 정규화
+        const combinedAward = normalizeTo100(allYears.map((y) => awardMap[y] || 0));
+        const combinedSales = normalizeTo100(allYears.map((y) => salesMap[y] || 0));
+        const combinedInterest = normalizeTo100(allYears.map((y) => interestMap[y] || 0));
 
         const ctxCombined = document.getElementById("chartCombined").getContext("2d");
         const combinedColors = [
@@ -1312,6 +1319,7 @@
           "rgba(96, 165, 250, 1)",
           "rgba(167, 139, 250, 1)",
         ];
+
         new Chart(ctxCombined, {
           type: "line",
           data: {
@@ -1370,6 +1378,7 @@
           ["공모선정(정규화)", "판매액(정규화)", "관심도(정규화)"],
           combinedColors
         );
+
       } catch (e) {
         console.error("공공데이터 로드/시각화 중 오류:", e);
       }
