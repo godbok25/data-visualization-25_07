@@ -144,14 +144,33 @@
     }
 
     /* Section Styles */
+    /* 각 섹션을 화면 한 뷰 높이에 맞추기 */
     section.page-section {
       min-height: 100vh;
-      padding-top: 40px;
-      /* Space for visual separation */
-      padding-bottom: 60px;
-      scroll-margin-top: 80px;
-      /* Offset for fixed GNB */
-      border-bottom: 1px solid var(--border-subtle);
+      /* 화면 높이 기준 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* 가운데 정렬 */
+      padding: 40px 0;
+      scroll-snap-align: start;
+      /* 스크롤 스냅 포인트 */
+    }
+
+    /* 스크롤 시 섹션 단위로 부드럽게 이동 */
+    html,
+    body {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    /* 섹션 간 기본 여백 제거 */
+    .layout,
+    .panel {
+      margin-top: 0;
+      margin-bottom: 0;
     }
 
     section.page-section:last-child {
@@ -740,7 +759,7 @@
             최근 5년간 공공데이터 분석 결과, 전통문양을 현대적으로 재해석한 문화상품이 꾸준히 증가하며 ‘생활 속 문화유산’으로 확산되고 있다.
             자개·민화·단청 계열 제품이 판매와 관심도 모두 높게 나타났고, 감성적 리디자인 제품이 시장 반응을 주도했다.
             리디자인 강도가 높을수록 소비자 관심도도 함께 상승해, 전통의 현대화가 실질적 경쟁력으로 작용하고 있음을 보여준다.
-            데이터 출처: 국립박물관문화재단 공공데이터(공모선정목록, 판매정보, 인기관심도, 2020–2025).
+            <br><b>데이터 출처: 국립박물관문화재단 공공데이터(공모선정목록, 판매정보, 인기관심도, 2020–2025).</b>
           </p>
         </div>
       </div>
@@ -1066,14 +1085,20 @@
     function buildBubbleDatasets(items) {
       const grouped = {};
 
+      // 1) 리디자인 점수의 최소/최대 구하기
+      const scores = items.map(i => i.redesignScore);
+      const minScore = Math.min(...scores);
+      const maxScore = Math.max(...scores);
+      const range = maxScore - minScore || 1; // 0 나누기 방지
+
+      // 2) 각 아이템을 카테고리별로 묶으면서 반지름 스케일링
       items.forEach((item) => {
         const cat = item.category || "기타";
         if (!grouped[cat]) grouped[cat] = [];
 
-        // 🔹 버블 크기 기준: 판매 + 관심 평균값
-        const intensity = (item.salesScore + item.interestScore) / 2; // 0~100
-        // 🔹 10~38px 사이로 크기 변화 (값이 클수록 크게)
-        const radius = 10 + (intensity / 100) * 28;
+        // 0~1 사이로 정규화한 후 10~48px 사이로 스케일
+        const t = (item.redesignScore - minScore) / range; // 0~1
+        const radius = 10 + t * 38; // 최소 10px, 최대 48px
 
         grouped[cat].push({
           x: item.salesScore,
@@ -1084,17 +1109,17 @@
         });
       });
 
+      // 3) 카테고리별 dataset 생성
       return Object.keys(grouped).map((cat) => ({
         label: cat,
         data: grouped[cat],
         backgroundColor: categoryColors[cat] || categoryColors["기타"],
-        borderColor: "rgba(255, 255, 255, 0.95)",       // 흰색 테두리
+        borderColor: "rgba(255, 255, 255, 0.95)",
         borderWidth: 2,
         hoverBorderWidth: 3,
-        hoverBorderColor: "rgba(30, 41, 59, 0.9)",      // 호버 시 진한 외곽선
+        hoverBorderColor: "rgba(30, 41, 59, 0.9)",
       }));
     }
-
     function buildLegendBubble(id, items) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -1121,7 +1146,7 @@
     function initBubbleChart() {
       const canvas = document.getElementById("chartBubble");
       if (!canvas) return;
-      const ctx = canvas.getContext("2d");
+      const ctx = document.getElementById("chartBubble").getContext("2d");
       const datasets = buildBubbleDatasets(bubbleItems);
 
       new Chart(ctx, {
