@@ -186,7 +186,7 @@
     h1 {
       font-size: 24px;
       letter-spacing: -0.04em;
-      margin: 0 0 4px;
+      margin: 0 0 12px;
     }
 
     .subtitle {
@@ -256,6 +256,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      margin-bottom: 4px;
     }
 
     .panel-kicker {
@@ -264,6 +265,7 @@
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.12em;
+      margin-bottom: 4px;
     }
 
     .panel-sub {
@@ -374,13 +376,26 @@
       gap: 4px;
       padding: 4px 7px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
+      background: transparent;
       border: 1px solid rgba(148, 163, 184, 0.55);
       cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .group-toggle-row label:hover {
+      background: var(--accent-soft) !important;
+      color: var(--accent) !important;
+      font-weight: 600;
     }
 
     :root[data-theme="light"] .group-toggle-row label {
-      background: rgba(255, 255, 255, 0.9);
+      background: transparent;
+    }
+
+    :root[data-theme="light"] .group-toggle-row label:hover {
+      background: var(--accent-soft) !important;
+      color: var(--accent-strong) !important;
+      font-weight: 600;
     }
 
     .group-toggle-row input {
@@ -491,6 +506,43 @@
       white-space: nowrap;
     }
 
+    /*section2추가*/
+    /* 공공데이터 섹션 블록 간 간격 */
+    #section2 .layout {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+
+
+    /* 카드/패널 사이도 조금 여유 있게 */
+    #section2 .panel {
+      margin-bottom: 8px;
+    }
+
+    /* 오른쪽 설명 카드 안 이미지 플레이스홀더 */
+    .mini-card-image {
+      margin-top: 16px;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      /* 항상 예쁜 비율로 */
+      border-radius: 14px;
+      background: linear-gradient(135deg,
+          rgba(148, 163, 184, 0.18),
+          rgba(148, 163, 184, 0.05));
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+    }
+
+    /* 실제 이미지를 넣었을 때도 꽉 차게 보이도록 */
+    .mini-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /*추가 end*/
     @media (max-width: 900px) {
       body {
         padding: 20px 14px 24px;
@@ -504,6 +556,22 @@
       .header-row {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .panel-title {
+        flex-wrap: wrap;
+      }
+
+      .group-toggle-row {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
       }
 
       .mini-card {
@@ -576,9 +644,11 @@
               <div class="panel-kicker">종합 비교</div>
               <div class="panel-title">
                 A·B·C 그룹 관심도 추이
-                <span class="badge-compare">대표 키워드 3종 비교</span>
               </div>
-              <div class="panel-sub">A: 국립중앙박물관 굿즈 · B: 자개 · C: 국립중앙박물관</div>
+              <div class="panel-sub">
+                <span class="badge-compare">대표 키워드 3종</span>
+                A: 국립중앙박물관 굿즈 · B: 자개 · C: 국립중앙박물관
+              </div>
             </div>
             <div class="group-toggle-row" aria-label="그룹 표시 여부">
               <label><input type="checkbox" id="toggleA" checked />A 그룹</label>
@@ -650,22 +720,185 @@
       </footer>
     </section>
 
-    <!-- SECTION 2: 공공 데이터 -->
+    <!-- ========================
+  SECTION 2 – 공공 데이터
+========================= -->
     <section id="section2" class="page-section">
-      <div class="placeholder-content">
-        <h2>공공 데이터</h2>
-        <p>공공 데이터 관련 내용이 들어갈 자리입니다.</p>
-        <p>데이터 수집중입니다.</p>
+      <!-- 인트로 영역 -->
+      <div class="header-row">
+        <div>
+          <h1>공공데이터 기반 문화유산 굿즈 분석</h1>
+          <p class="subtitle">
+            국립박물관문화재단의 공모선정, 판매정보, 인기관심도 데이터를 활용하여
+            문화유산 굿즈가 기획·유통·소비되는 전체 흐름을 시각화합니다.
+          </p>
+        </div>
       </div>
+
+      <div class="chip-row">
+        <div class="chip"><strong>데이터 출처</strong> · 국립박물관문화재단 공공데이터</div>
+        <div class="chip"><strong>기간</strong> · 2020–2025</div>
+        <div class="chip"><strong>분석 범위</strong> · 생산–유통–소비</div>
+      </div>
+
+      <!-- 2-1 공모선정 (생산 단계) -->
+      <div class="layout">
+        <!-- 차트 패널 -->
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">생산 단계</div>
+              <div class="panel-title">공모선정 상품 수 추이</div>
+              <!-- 기간 표기 수정 -->
+              <div class="panel-sub">연도별 공모선정 건수 (2020–2025)</div>
+            </div>
+          </div>
+          <div class="chart-shell">
+            <canvas id="chartAward"></canvas>
+          </div>
+          <div class="chart-meta-row">
+            <div class="legend-inline" id="legendAward"></div>
+            <div>단위: 개</div>
+          </div>
+        </section>
+
+        <!-- 인사이트 + 이미지 카드 -->
+        <section class="panel">
+          <div class="cards">
+            <article class="mini-card">
+              <div>
+                <div class="kicker">공모선정</div>
+                <h3>문화유산 소재 리디자인 확산</h3>
+                <p>
+                  최근 3년간 공모선정 건수는 꾸준히 증가하며,
+                  자개·단청·민화 등 전통 소재를 활용한 리디자인 굿즈 비중이 높아지고 있습니다.
+                </p>
+              </div>
+              <!-- 이미지 박스 -->
+              <div class="mini-card-image">
+                <!-- 실제 이미지 사용 시 예시
+            <img src="./images/award-example.jpg" alt="공모선정 굿즈 예시">
+            -->
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2-2 판매정보 (유통 단계) -->
+      <div class="layout">
+        <!-- 차트 패널 -->
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">유통 단계</div>
+              <div class="panel-title">연도별 판매 추이</div>
+              <div class="panel-sub">연 판매액 합계 (2021–2025)</div>
+            </div>
+          </div>
+          <div class="chart-shell">
+            <canvas id="chartSales"></canvas>
+          </div>
+          <div class="chart-meta-row">
+            <div class="legend-inline" id="legendSales"></div>
+            <div>단위: 원</div>
+          </div>
+        </section>
+
+        <!-- 인사이트 + 이미지 카드 -->
+        <section class="panel">
+          <div class="cards">
+            <article class="mini-card">
+              <div>
+                <div class="kicker">판매정보</div>
+                <h3>문화유산 굿즈 시장의 성장</h3>
+                <p>
+                  공모선정 증가와 함께 연도별 판매액과 상품 수가 동반 상승하며,
+                  문화유산 굿즈 시장이 안정적인 성장 단계에 진입했음을 보여줍니다.
+                </p>
+              </div>
+              <div class="mini-card-image">
+                <!-- <img src="./images/sales-example.jpg" alt="판매 상위 굿즈 예시"> -->
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2-3 인기관심도 (소비/반응 단계) -->
+      <div class="layout">
+        <!-- 차트 패널 -->
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">소비 단계</div>
+              <div class="panel-title">연도별 인기관심도</div>
+              <div class="panel-sub">관심도 평균 지수 (2020–2024)</div>
+            </div>
+          </div>
+          <div class="chart-shell">
+            <canvas id="chartInterest"></canvas>
+          </div>
+          <div class="chart-meta-row">
+            <div class="legend-inline" id="legendInterest"></div>
+            <div>단위: 관심도(조회수)</div>
+          </div>
+        </section>
+
+        <!-- 인사이트 + 이미지 카드 -->
+        <section class="panel">
+          <div class="cards">
+            <article class="mini-card">
+              <div>
+                <div class="kicker">인기관심도</div>
+                <h3>소비자 감성 반응 증가</h3>
+                <p>
+                  문화유산 관련 키워드의 조회수와 관심 지수는 꾸준히 상승하며,
+                  감성소비 중심의 굿즈 수요가 확대되고 있음을 보여줍니다.
+                </p>
+              </div>
+              <div class="mini-card-image">
+                <!-- <img src="./images/interest-example.jpg" alt="관심도 높은 굿즈 예시"> -->
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2-4 종합 요약 (생산–유통–소비 연계) -->
+      <div class="layout">
+        <section class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">종합 비교</div>
+              <div class="panel-title">생산–유통–소비 연계 분석</div>
+              <div class="panel-sub">공모선정 · 판매정보 · 인기관심도의 흐름 비교</div>
+            </div>
+          </div>
+          <div class="chart-shell">
+            <canvas id="chartCombined"></canvas>
+          </div>
+          <div class="chart-meta-row">
+            <div class="legend-inline" id="legendCombined"></div>
+            <div>단위: 정규화 지수 (0–100)</div>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <span>데이터: 국립박물관문화재단 공공데이터 (2020–2025)</span>
+        <span>시각화: Chart.js · HTML · CSS</span>
+      </footer>
     </section>
 
+
     <!-- SECTION 3: 시각화 자료 -->
-    <section id="section3" class="page-section">
+    <!-- <section id="section3" class="page-section">
       <div class="placeholder-content">
         <h2>시각화 자료</h2>
         <p>추가 시각화 자료가 들어갈 자리입니다.</p>
       </div>
-    </section>
+    </section> -->
 
     <!-- SECTION 4: 분석 인사이트 -->
     <section id="section4" class="page-section">
@@ -676,12 +909,12 @@
     </section>
 
     <!-- SECTION 5: 결론 · 제언 -->
-    <section id="section5" class="page-section">
+    <!-- <section id="section5" class="page-section">
       <div class="placeholder-content">
         <h2>결론 · 제언</h2>
         <p>최종 결론 및 제언 내용이 들어갈 자리입니다.</p>
       </div>
-    </section>
+    </section> -->
 
   </div>
 
@@ -857,6 +1090,323 @@
         }
       });
     });
+    /* ----- 여기까지가 기존 코드 ----- */
+
+    // =========================
+    // SECTION 2: 공공데이터 차트
+    // =========================
+
+    // ▼ JSON 파일 경로 (파일 위치에 맞게 수정)
+    const PUBLIC_DATA_PATHS = {
+      award: "./국립박물관문화재단_공모선정_통합데이터.json",
+      sales: "./국립박물관문화재단_판매정보_통합데이터.json",
+      interest: "./국립박물관문화재단_인기관심도_통합데이터.json",
+    };
+
+    // ▼ 간단한 범례 생성 유틸
+    function buildLegendFor(id, labels, colors) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = "";
+      labels.forEach((label, i) => {
+        const item = document.createElement("div");
+        item.className = "legend-item";
+        const sw = document.createElement("span");
+        sw.className = "legend-swatch";
+        sw.style.background = colors[i];
+        const text = document.createElement("span");
+        text.textContent = label;
+        item.appendChild(sw);
+        item.appendChild(text);
+        el.appendChild(item);
+      });
+    }
+
+    // ▼ 객체 배열을 연도별로 count / sum / avg 등 집계하는 작은 헬퍼들
+    function groupCountByYear(rows) {
+      const map = {};
+      rows.forEach(r => {
+        const y = String(r["연도"] || "").trim();
+        if (!y) return;
+        map[y] = (map[y] || 0) + 1;
+      });
+      return map;
+    }
+
+    function groupSumByYear(rows, field) {
+      const map = {};
+      rows.forEach(r => {
+        const y = String(r["연도"] || "").trim();
+        if (!y) return;
+        const v = parseFloat(String(r[field] ?? "").replace(/,/g, ""));
+        if (isNaN(v)) return;
+        map[y] = (map[y] || 0) + v;
+      });
+      return map;
+    }
+
+    function groupAvgByYear(rows, field) {
+      const sum = {};
+      const cnt = {};
+      rows.forEach(r => {
+        const y = String(r["연도"] || "").trim();
+        if (!y) return;
+        const v = parseFloat(String(r[field] ?? "").replace(/,/g, ""));
+        if (isNaN(v)) return;
+        sum[y] = (sum[y] || 0) + v;
+        cnt[y] = (cnt[y] || 0) + 1;
+      });
+      const map = {};
+      Object.keys(sum).forEach(y => {
+        map[y] = sum[y] / cnt[y];
+      });
+      return map;
+    }
+
+    // ▼ 인기관심도에서 사용할 값 컬럼 자동 탐색 (관심도 / 조회수 등)
+    function detectInterestField(sampleRow) {
+      if (!sampleRow) return "관심도";
+      const keys = Object.keys(sampleRow);
+      const candidates = ["관심도", "조회수", "평균조회수", "Views", "view"];
+      for (const c of candidates) {
+        if (keys.includes(c)) return c;
+      }
+      // 못 찾으면 첫 번째 숫자형 컬럼 사용
+      for (const k of keys) {
+        const v = parseFloat(sampleRow[k]);
+        if (!isNaN(v)) return k;
+      }
+      return "관심도";
+    }
+
+    // ▼ 값 정규화(0~100)해서 종합 차트용으로 사용
+    function normalizeTo100(array) {
+      const nums = array.map(v => Number(v) || 0);
+      const max = Math.max(...nums);
+      if (max === 0) return nums.map(() => 0);
+      return nums.map(v => (v / max) * 100);
+    }
+
+    async function initPublicCharts() {
+      try {
+        const [awardRes, salesRes, interestRes] = await Promise.all([
+          fetch(PUBLIC_DATA_PATHS.award),
+          fetch(PUBLIC_DATA_PATHS.sales),
+          fetch(PUBLIC_DATA_PATHS.interest),
+        ]);
+
+        const [awardData, salesData, interestData] = await Promise.all([
+          awardRes.json(),
+          salesRes.json(),
+          interestRes.json(),
+        ]);
+
+        // ---------- 1) 공모선정: 연도별 건수 ----------
+        const awardMap = groupCountByYear(awardData);
+        const awardYears = Object.keys(awardMap).sort();
+        const awardCounts = awardYears.map(y => awardMap[y]);
+
+        const ctxAward = document.getElementById("chartAward").getContext("2d");
+        const awardColor = "rgba(56, 189, 248, 1)";
+        new Chart(ctxAward, {
+          type: "bar",
+          data: {
+            labels: awardYears,
+            datasets: [{
+              label: "공모선정 수",
+              data: awardCounts,
+              backgroundColor: "rgba(56, 189, 248, 0.45)",
+              borderColor: awardColor,
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+            },
+          },
+        });
+        buildLegendFor("legendAward", ["공모선정 수"], [awardColor]);
+
+        // ---------- 2) 판매정보: 연도별 판매액 합계 ----------
+        // 판매정보에서 사용할 금액 컬럼 이름(필요하면 "판매액" 등으로 수정)
+        const salesSample = salesData[0] || {};
+        const salesFieldCandidates = ["판매가", "판매액", "금액"];
+        let salesField = salesFieldCandidates.find(k => k in salesSample) || "판매가";
+
+        const salesMap = groupSumByYear(salesData, salesField);
+        const salesYears = Object.keys(salesMap).sort();
+        const salesSums = salesYears.map(y => salesMap[y]);
+
+        const ctxSales = document.getElementById("chartSales").getContext("2d");
+        const salesColor = "rgba(96, 165, 250, 1)";
+        new Chart(ctxSales, {
+          type: "line",
+          data: {
+            labels: salesYears,
+            datasets: [{
+              label: "총 판매액",
+              data: salesSums,
+              borderColor: salesColor,
+              backgroundColor: "rgba(96,165,250,0.22)",
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 3,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+              y: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+            },
+          },
+        });
+        buildLegendFor("legendSales", ["총 판매액"], [salesColor]);
+
+        // ---------- 3) 인기관심도: 연도별 평균 관심도 ----------
+        const interestField = detectInterestField(interestData[0]);
+        const interestMap = groupAvgByYear(interestData, interestField);
+        const interestYears = Object.keys(interestMap).sort();
+        const interestAvg = interestYears.map(y => interestMap[y]);
+
+        const ctxInterest = document.getElementById("chartInterest").getContext("2d");
+        const interestColor = "rgba(167, 139, 250, 1)";
+        new Chart(ctxInterest, {
+          type: "line",
+          data: {
+            labels: interestYears,
+            datasets: [{
+              label: "평균 관심도",
+              data: interestAvg,
+              borderColor: interestColor,
+              backgroundColor: "rgba(167,139,250,0.22)",
+              borderWidth: 2,
+              tension: 0.35,
+              pointRadius: 3,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+              y: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+            },
+          },
+        });
+        buildLegendFor("legendInterest", ["평균 관심도"], [interestColor]);
+
+        // ---------- 4) 종합 연계 차트 (정규화 지수) ----------
+        // 공통 연도 집합 만들기 (교집합이 아니라 합집합 기준)
+        const allYearsSet = new Set([
+          ...awardYears,
+          ...salesYears,
+          ...interestYears,
+        ]);
+        const allYears = Array.from(allYearsSet).sort();
+
+        const combinedAward = normalizeTo100(allYears.map(y => awardMap[y] || 0));
+        const combinedSales = normalizeTo100(allYears.map(y => salesMap[y] || 0));
+        const combinedInterest = normalizeTo100(allYears.map(y => interestMap[y] || 0));
+
+        const ctxCombined = document.getElementById("chartCombined").getContext("2d");
+        const combinedColors = [
+          "rgba(56, 189, 248, 1)",
+          "rgba(96, 165, 250, 1)",
+          "rgba(167, 139, 250, 1)",
+        ];
+        new Chart(ctxCombined, {
+          type: "line",
+          data: {
+            labels: allYears,
+            datasets: [
+              {
+                label: "공모선정(정규화)",
+                data: combinedAward,
+                borderColor: combinedColors[0],
+                backgroundColor: "rgba(56,189,248,0.18)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 2,
+              },
+              {
+                label: "판매액(정규화)",
+                data: combinedSales,
+                borderColor: combinedColors[1],
+                backgroundColor: "rgba(96,165,250,0.18)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 2,
+              },
+              {
+                label: "관심도(정규화)",
+                data: combinedInterest,
+                borderColor: combinedColors[2],
+                backgroundColor: "rgba(167,139,250,0.18)",
+                borderWidth: 2,
+                tension: 0.35,
+                pointRadius: 2,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+              y: {
+                beginAtZero: true,
+                max: 100,
+                grid: { color: "rgba(148,163,184,0.20)" },
+                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+              },
+            },
+          },
+        });
+        buildLegendFor(
+          "legendCombined",
+          ["공모선정(정규화)", "판매액(정규화)", "관심도(정규화)"],
+          combinedColors
+        );
+      } catch (e) {
+        console.error("공공데이터 로드/시각화 중 오류:", e);
+      }
+    }
+
+    // 페이지 로드 후 실행
+    window.addEventListener("load", initPublicCharts);   
   </script>
 </body>
 
