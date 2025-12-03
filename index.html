@@ -698,170 +698,53 @@
     </section>
 
     <!-- ========================
-  SECTION 2 – 공공 데이터
+  SECTION 2 – 공공 데이터 종합 비교
 ========================= -->
     <section id="section2" class="page-section">
-      <!-- 인트로 영역 -->
       <div class="header-row">
         <div>
-          <h1>공공데이터 기반 문화유산 굿즈 분석</h1>
+          <h1>문화유산 리디자인 굿즈 종합 비교</h1>
           <p class="subtitle">
-            국립박물관문화재단의 공모선정, 판매정보, 인기관심도 데이터를 활용하여
-            문화유산 굿즈가 기획·유통·소비되는 전체 흐름을 시각화합니다.
+            대표 리디자인 상품들의 판매 성과, 인기관심도, 리디자인 강도를
+            한 번에 비교하는 버블 차트입니다.
           </p>
         </div>
       </div>
 
       <div class="chip-row">
-        <div class="chip"><strong>데이터 출처</strong> · 국립박물관문화재단 공공데이터</div>
-        <div class="chip"><strong>기간</strong> · 2020–2025</div>
-        <div class="chip"><strong>분석 범위</strong> · 생산–유통–소비</div>
+        <div class="chip"><strong>축 설명</strong> · X: 판매지수 · Y: 관심지수 · 크기: 리디자인 강도</div>
+        <div class="chip"><strong>색상</strong> · 자개 · 민화 · 단청 · 서체/기타</div>
       </div>
 
-      <!-- 2-1 공모선정 (생산 단계) -->
-      <div class="layout">
-        <!-- 차트 패널 -->
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-kicker">생산 단계</div>
-              <div class="panel-title">공모선정 상품 수 추이</div>
-              <!-- 기간 표기 수정 -->
-              <div class="panel-sub">연도별 공모선정 건수 (2020–2025)</div>
-            </div>
-          </div>
-          <div class="chart-shell">
-            <canvas id="chartAward"></canvas>
-          </div>
-          <div class="chart-meta-row">
-            <div class="legend-inline" id="legendAward"></div>
-            <div>단위: 개</div>
-          </div>
-        </section>
-
-        <!-- 인사이트 + 이미지 카드 -->
-        <section class="panel">
-          <div class="cards">
-            <article class="mini-card">
-              <div>
-                <div class="kicker">공모선정</div>
-                <h3>문화유산 소재 리디자인 확산</h3>
-                <p>
-                  최근 3년간 공모선정 건수는 꾸준히 증가하며,
-                  자개·단청·민화 등 전통 소재를 활용한 리디자인 굿즈 비중이 높아지고 있습니다.
-                </p>
-                <div class="meta">대표 키워드: 자개 · 단청 · 민화</div>
-              </div>
-              <!-- 섹션1과 같은 스타일의 작은 이미지 박스 -->
-              <div class="mini-thumb a" aria-hidden="true"></div>
-            </article>
-          </div>
-        </section>
-      </div>
-
-      <!-- 2-2 판매정보 (유통 단계) -->
-      <div class="layout">
-        <!-- 차트 패널 -->
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-kicker">유통 단계</div>
-              <div class="panel-title">연도별 판매 추이</div>
-              <div class="panel-sub">연 판매액 합계 (2021–2025)</div>
-            </div>
-          </div>
-          <div class="chart-shell">
-            <canvas id="chartSales"></canvas>
-          </div>
-          <div class="chart-meta-row">
-            <div class="legend-inline" id="legendSales"></div>
-            <div>단위: 원</div>
-          </div>
-        </section>
-
-        <!-- 인사이트 + 이미지 카드 -->
-        <section class="panel">
-          <div class="cards">
-            <article class="mini-card">
-              <div>
-                <div class="kicker">판매정보</div>
-                <h3>문화유산 굿즈 시장의 성장</h3>
-                <p>
-                  공모선정 증가와 함께 연도별 판매액과 상품 수가 동반 상승하며,
-                  문화유산 굿즈 시장이 안정적인 성장 단계에 진입했음을 보여줍니다.
-                </p>
-                <div class="meta">대표 지표: 연도별 판매액 · 상품 수</div>
-              </div>
-              <div class="mini-thumb b" aria-hidden="true"></div>
-            </article>
-          </div>
-        </section>
-      </div>
-
-      <!-- 2-3 인기관심도 (소비/반응 단계) -->
-      <div class="layout">
-        <!-- 차트 패널 -->
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-kicker">소비 단계</div>
-              <div class="panel-title">연도별 인기관심도</div>
-              <div class="panel-sub">관심도 평균 지수 (2020–2024)</div>
-            </div>
-          </div>
-          <div class="chart-shell">
-            <canvas id="chartInterest"></canvas>
-          </div>
-          <div class="chart-meta-row">
-            <div class="legend-inline" id="legendInterest"></div>
-            <div>단위: 관심도(조회수)</div>
-          </div>
-        </section>
-
-        <!-- 인사이트 + 이미지 카드 -->
-        <section class="panel">
-          <div class="cards">
-            <article class="mini-card">
-              <div>
-                <div class="kicker">인기관심도</div>
-                <h3>소비자 감성 반응 증가</h3>
-                <p>
-                  문화유산 관련 키워드의 조회수와 관심 지수는 꾸준히 상승하며,
-                  감성소비 중심의 굿즈 수요가 확대되고 있음을 보여줍니다.
-                </p>
-                <div class="meta">대표 지표: 조회수 · 관심지수 평균</div>
-              </div>
-              <div class="mini-thumb c" aria-hidden="true"></div>
-            </article>
-          </div>
-        </section>
-      </div>
-
-      <!-- 2-4 종합 요약 (생산–유통–소비 연계) -->
       <div class="layout">
         <section class="panel" style="grid-column: 1 / -1;">
           <div class="panel-header">
             <div>
               <div class="panel-kicker">종합 비교</div>
-              <div class="panel-title">생산–유통–소비 연계 분석</div>
-              <div class="panel-sub">공모선정 · 판매정보 · 인기관심도의 흐름 비교</div>
+              <div class="panel-title">대표 리디자인 굿즈 포지셔닝 (판매 × 관심 × 리디자인)</div>
+              <div class="panel-sub">
+                각 버블은 하나의 대표 상품을 의미하며, 위치와 크기를 통해 시장성과 문화적 리디자인 정도를 함께 보여줍니다.
+              </div>
             </div>
           </div>
+
           <div class="chart-shell">
-            <canvas id="chartCombined"></canvas>
+            <canvas id="chartBubble"></canvas>
           </div>
+
           <div class="chart-meta-row">
-            <div class="legend-inline" id="legendCombined"></div>
-            <div>단위: 정규화 지수 (0–100)</div>
+            <div class="legend-inline" id="legendBubble"></div>
+            <div>단위: 0–100 정규화 지수</div>
           </div>
         </section>
       </div>
 
       <footer>
-        <span>데이터: 국립박물관문화재단 공공데이터 (2020–2025)</span>
-        <span>시각화: Chart.js · HTML · CSS</span>
+        <span>지표 예시: 판매지수 · 인기관심도 · 리디자인 강도 (0–100 스코어)</span>
+        <span>시각화: Chart.js · Bubble Chart</span>
       </footer>
     </section>
+
 
 
     <!-- SECTION 3: 시각화 자료 -->
