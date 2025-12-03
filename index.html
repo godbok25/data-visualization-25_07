@@ -527,6 +527,29 @@
       /* 필요하면 380~480px 사이에서 조절 */
     }
 
+    /* ---------------------------------
+   버블 차트용 부드러운 뉴트럴 컬러 팔레트
+   --------------------------------- */
+
+    :root {
+      --color-jagae: rgba(102, 125, 204, 0.7);
+      /* 부드러운 인디고 블루 */
+      --color-minhwa: rgba(220, 145, 170, 0.7);
+      /* 로즈핑크톤 */
+      --color-dancheong: rgba(139, 182, 165, 0.7);
+      /* 세이지 그린 */
+      --color-seoche: rgba(137, 168, 210, 0.7);
+      /* 페일 블루 */
+      --color-doja: rgba(224, 192, 141, 0.7);
+      /* 샌드 베이지 */
+      --color-boksik: rgba(228, 172, 122, 0.7);
+      /* 살구톤 */
+      --color-mokgong: rgba(186, 140, 130, 0.7);
+      /* 브라운 레드 */
+      --color-gita: rgba(170, 178, 190, 0.7);
+      /* 웜 그레이 */
+    }
+
     /*추가 end*/
     @media (max-width: 900px) {
       body {
@@ -976,15 +999,16 @@
 
     // 카테고리별 색상
     const categoryColors = {
-      "자개": "rgba(129,140,248,0.95)",
-      "민화": "rgba(236,72,153,0.95)",
-      "단청": "rgba(16,185,129,0.95)",
-      "서체": "rgba(59,130,246,0.95)",
-      "도자/백자": "rgba(250,204,21,0.95)",
-      "전통복식/문양": "rgba(251,146,60,0.95)",
-      "건축/목공예": "rgba(244,63,94,0.95)",
-      "기타": "rgba(148,163,184,0.95)",
+      "자개": getComputedStyle(document.documentElement).getPropertyValue("--color-jagae"),
+      "민화": getComputedStyle(document.documentElement).getPropertyValue("--color-minhwa"),
+      "단청": getComputedStyle(document.documentElement).getPropertyValue("--color-dancheong"),
+      "서체/기타": getComputedStyle(document.documentElement).getPropertyValue("--color-seoche"),
+      "도자/백자": getComputedStyle(document.documentElement).getPropertyValue("--color-doja"),
+      "전통복식/문양": getComputedStyle(document.documentElement).getPropertyValue("--color-boksik"),
+      "건축/목공예": getComputedStyle(document.documentElement).getPropertyValue("--color-mokgong"),
+      "기타": getComputedStyle(document.documentElement).getPropertyValue("--color-gita"),
     };
+
 
     function buildBubbleDatasets(items) {
       const grouped = {};
