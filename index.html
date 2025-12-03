@@ -1043,232 +1043,168 @@
       return nums.map(v => (v / max) * 100);
     }
 
-    async function initPublicCharts() {
-      try {
-        const [awardRes, salesRes, interestRes] = await Promise.all([
-          fetch(PUBLIC_DATA_PATHS.award),
-          fetch(PUBLIC_DATA_PATHS.sales),
-          fetch(PUBLIC_DATA_PATHS.interest),
-        ]);
 
-        const [awardData, salesData, interestData] = await Promise.all([
-          awardRes.json(),
-          salesRes.json(),
-          interestRes.json(),
-        ]);
+    // =========================
+    // SECTION 2: 버블 차트 종합 비교
+    // =========================
 
-        // ---------- 1) 공모선정: 연도별 건수 ----------
-        const awardMap = groupCountByYear(awardData);
-        const awardYears = Object.keys(awardMap).sort();
-        const awardCounts = awardYears.map(y => awardMap[y]);
+    // 대표 상품 데이터 (예시 값)
+    // score는 0~100 범위의 정규화 지수로, 나중에 실제 분석 값으로 교체하면 됨.
+    const bubbleItems = [
+      {
+        label: "일월오봉도 자개 텀블러",
+        category: "자개",
+        salesScore: 85,     // 판매지수
+        interestScore: 90,  // 인기관심도
+        redesignScore: 95,  // 리디자인 강도 (버블 크기)
+      },
+      {
+        label: "십장생 민화 머그컵",
+        category: "민화",
+        salesScore: 70,
+        interestScore: 88,
+        redesignScore: 92,
+      },
+      {
+        label: "단청 패턴 노트북 파우치",
+        category: "단청",
+        salesScore: 60,
+        interestScore: 80,
+        redesignScore: 90,
+      },
+      {
+        label: "훈민정음 캘리그래피 노트",
+        category: "서체/기타",
+        salesScore: 65,
+        interestScore: 72,
+        redesignScore: 78,
+      },
+      {
+        label: "백자 달항아리 미니 오브제",
+        category: "기타",
+        salesScore: 50,
+        interestScore: 60,
+        redesignScore: 85,
+      },
+    ];
 
-        const ctxAward = document.getElementById("chartAward").getContext("2d");
-        const awardColor = "rgba(56, 189, 248, 1)";
-        new Chart(ctxAward, {
-          type: "bar",
-          data: {
-            labels: awardYears,
-            datasets: [{
-              label: "공모선정 수",
-              data: awardCounts,
-              backgroundColor: "rgba(56, 189, 248, 0.45)",
-              borderColor: awardColor,
-              borderWidth: 1,
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-              y: {
-                beginAtZero: true,
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-            },
-          },
+    // 카테고리별 색상 매핑 (필요하면 색상 바꿔도 됨)
+    const categoryColors = {
+      "자개": "rgba(129, 140, 248, 0.85)",     // indigo
+      "민화": "rgba(244, 114, 182, 0.85)",     // pink
+      "단청": "rgba(52, 211, 153, 0.85)",      // emerald
+      "서체/기타": "rgba(96, 165, 250, 0.85)", // blue
+      "기타": "rgba(148, 163, 184, 0.85)",     // slate
+    };
+
+    // 카테고리별로 dataset 나누기
+    function buildBubbleDatasets(items) {
+      const grouped = {};
+      items.forEach(item => {
+        const cat = item.category || "기타";
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({
+          x: item.salesScore,
+          y: item.interestScore,
+          r: 8 + (item.redesignScore / 10), // 8 ~ 18 정도 크기
+          _label: item.label,
         });
-        buildLegendFor("legendAward", ["공모선정 수"], [awardColor]);
+      });
 
-        // ---------- 2) 판매정보: 연도별 판매액 합계 ----------
-        // 이제 salesData는 이미 연도별 요약 JSON이므로 바로 사용
-        // (국립박물관문화재단_판매정보_연도요약.json 기준: 연도, 총판매액, 상품수)
-        const salesYears = salesData.map((r) => String(r["연도"]).trim());
-        const salesSums = salesData.map((r) => Number(r["총판매액"]) || 0);
-
-        const ctxSales = document.getElementById("chartSales").getContext("2d");
-        const salesColor = "rgba(96, 165, 250, 1)";
-        new Chart(ctxSales, {
-          type: "line",
-          data: {
-            labels: salesYears,
-            datasets: [{
-              label: "총 판매액",
-              data: salesSums,
-              borderColor: salesColor,
-              backgroundColor: "rgba(96,165,250,0.22)",
-              borderWidth: 2,
-              tension: 0.35,
-              pointRadius: 3,
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-              y: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-            },
-          },
-        });
-        buildLegendFor("legendSales", ["총 판매액"], [salesColor]);
-
-
-        // ---------- 3) 인기관심도: 연도별 평균 관심도 ----------
-        const interestField = detectInterestField(interestData[0]);
-        const interestMap = groupAvgByYear(interestData, interestField);
-        const interestYears = Object.keys(interestMap).sort();
-        const interestAvg = interestYears.map(y => interestMap[y]);
-
-        const ctxInterest = document.getElementById("chartInterest").getContext("2d");
-        const interestColor = "rgba(167, 139, 250, 1)";
-        new Chart(ctxInterest, {
-          type: "line",
-          data: {
-            labels: interestYears,
-            datasets: [{
-              label: "평균 관심도",
-              data: interestAvg,
-              borderColor: interestColor,
-              backgroundColor: "rgba(167,139,250,0.22)",
-              borderWidth: 2,
-              tension: 0.35,
-              pointRadius: 3,
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-              y: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-            },
-          },
-        });
-        buildLegendFor("legendInterest", ["평균 관심도"], [interestColor]);
-
-        // ---------- 4) 종합 연계 차트 (정규화 지수) ----------
-        // salesData 요약에서 연도→총판매액 맵 만들기
-        const salesMap = {};
-        salesYears.forEach((y, idx) => {
-          salesMap[y] = salesSums[idx] || 0;
-        });
-
-        // 공통 연도 집합 만들기 (교집합이 아니라 합집합 기준)
-        const allYearsSet = new Set([
-          ...awardYears,
-          ...salesYears,
-          ...interestYears,
-        ]);
-        const allYears = Array.from(allYearsSet).sort();
-
-        // 각 지표를 0~100으로 정규화
-        const combinedAward = normalizeTo100(allYears.map((y) => awardMap[y] || 0));
-        const combinedSales = normalizeTo100(allYears.map((y) => salesMap[y] || 0));
-        const combinedInterest = normalizeTo100(allYears.map((y) => interestMap[y] || 0));
-
-        const ctxCombined = document.getElementById("chartCombined").getContext("2d");
-        const combinedColors = [
-          "rgba(56, 189, 248, 1)",
-          "rgba(96, 165, 250, 1)",
-          "rgba(167, 139, 250, 1)",
-        ];
-
-        new Chart(ctxCombined, {
-          type: "line",
-          data: {
-            labels: allYears,
-            datasets: [
-              {
-                label: "공모선정(정규화)",
-                data: combinedAward,
-                borderColor: combinedColors[0],
-                backgroundColor: "rgba(56,189,248,0.18)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 2,
-              },
-              {
-                label: "판매액(정규화)",
-                data: combinedSales,
-                borderColor: combinedColors[1],
-                backgroundColor: "rgba(96,165,250,0.18)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 2,
-              },
-              {
-                label: "관심도(정규화)",
-                data: combinedInterest,
-                borderColor: combinedColors[2],
-                backgroundColor: "rgba(167,139,250,0.18)",
-                borderWidth: 2,
-                tension: 0.35,
-                pointRadius: 2,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
-            plugins: { legend: { display: false } },
-            scales: {
-              x: {
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-              y: {
-                beginAtZero: true,
-                max: 100,
-                grid: { color: "rgba(148,163,184,0.20)" },
-                ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
-              },
-            },
-          },
-        });
-        buildLegendFor(
-          "legendCombined",
-          ["공모선정(정규화)", "판매액(정규화)", "관심도(정규화)"],
-          combinedColors
-        );
-
-      } catch (e) {
-        console.error("공공데이터 로드/시각화 중 오류:", e);
-      }
+      return Object.keys(grouped).map(cat => ({
+        label: cat,
+        data: grouped[cat],
+        backgroundColor: categoryColors[cat] || categoryColors["기타"],
+        borderColor: "rgba(15, 23, 42, 0.8)",
+        borderWidth: 1,
+        hoverBorderWidth: 2,
+      }));
     }
 
-    // 페이지 로드 후 실행
-    window.addEventListener("load", initPublicCharts);   
+    function buildLegendBubble(id, items) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = "";
+
+      const cats = Array.from(new Set(items.map(i => i.category || "기타")));
+      cats.forEach(cat => {
+        const wrap = document.createElement("div");
+        wrap.className = "legend-item";
+
+        const sw = document.createElement("span");
+        sw.className = "legend-swatch";
+        sw.style.background = categoryColors[cat] || categoryColors["기타"];
+
+        const text = document.createElement("span");
+        text.textContent = cat;
+
+        wrap.appendChild(sw);
+        wrap.appendChild(text);
+        el.appendChild(wrap);
+      });
+    }
+
+    function initBubbleChart() {
+      const ctx = document.getElementById("chartBubble").getContext("2d");
+      const datasets = buildBubbleDatasets(bubbleItems);
+
+      new Chart(ctx, {
+        type: "bubble",
+        data: {
+          datasets,
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  const raw = ctx.raw;
+                  const dsLabel = ctx.dataset.label;
+                  const item = bubbleItems.find(
+                    i => i.category === dsLabel &&
+                      i.salesScore === raw.x &&
+                      i.interestScore === raw.y
+                  );
+                  const name = item ? item.label : "상품";
+                  return [
+                    name,
+                    `판매지수: ${raw.x}`,
+                    `관심지수: ${raw.y}`,
+                    `리디자인 강도: ${item ? item.redesignScore : "?"}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "판매지수 (0–100)" },
+              min: 0,
+              max: 100,
+              grid: { color: "rgba(148,163,184,0.20)" },
+              ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+            },
+            y: {
+              title: { display: true, text: "관심지수 (0–100)" },
+              min: 0,
+              max: 100,
+              grid: { color: "rgba(148,163,184,0.20)" },
+              ticks: { color: "rgba(148,163,184,0.95)", font: { size: 10 } },
+            },
+          },
+        },
+      });
+
+      buildLegendBubble("legendBubble", bubbleItems);
+    }
+
+    window.addEventListener("load", initBubbleChart);
+
   </script>
 </body>
 
